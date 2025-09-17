@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
+
 const EXTERIOR_VIEWS = [
-  { name: 'Front', src: '/images/views/front.jpg' },
-  { name: 'Rear', src: '/images/views/rear.jpg' },
-  { name: 'Left Side', src: '/images/views/left.jpg' },
-  { name: 'Right Side', src: '/images/views/right.jpg' },
-  { name: 'Top', src: '/images/views/top.jpg' }
+  { name: 'Front', src: 'my-car-portfolio/images/views/front.jpg' },
+  { name: 'Rear', src: 'my-car-portfolio/images/views/rear.jpg' },
+  { name: 'Left Side', src: 'my-car-portfolio/images/views/left.jpg' },
+  { name: 'Right Side', src: 'my-car-portfolio/images/views/right.jpg' },
+  { name: 'Top', src: 'my-car-portfolio/images/views/top.jpg' }
 ];
 
 const INTERIOR_FRAME_COUNT = 12;
