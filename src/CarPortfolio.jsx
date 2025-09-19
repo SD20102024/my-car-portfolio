@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 
-
+const Base = import.meta.env.BASE_URL;
+console.log("Base URL:", Base);// For Testing
 const EXTERIOR_VIEWS = [
-  { name: 'Front', src: 'my-car-portfolio/images/views/front.jpg' },
-  { name: 'Rear', src: 'my-car-portfolio/images/views/rear.jpg' },
-  { name: 'Left Side', src: 'my-car-portfolio/images/views/left.jpg' },
-  { name: 'Right Side', src: 'my-car-portfolio/images/views/right.jpg' },
-  { name: 'Top', src: 'my-car-portfolio/images/views/top.jpg' }
+  { name: 'Front', src: `${Base}images/views/front.jpg` }, //src is under string literal ` ` and not single quotes ''
+  { name: 'Rear', src: `${Base}images/views/rear.jpg` },
+  { name: 'Left Side', src: `${Base}images/views/left.jpg` },
+  { name: 'Right Side', src: `${Base}images/views/right.jpg` },
+  { name: 'Top', src: `${Base}images/views/top.jpg` }
 ];
 
+// import.meta.env.BASE_URL is set by Vite according to your vite.config.js → base: '/my-car-portfolio/'.
+// On GitHub Pages your images will be served from:
+// https://username.github.io/my-car-portfolio/images/views/front.jpg
+// Without backticks, you were literally sending the string "${BASE}images/views/front.jpg" which is invalid.
 const INTERIOR_FRAME_COUNT = 12;
 
 export default function CarPortfolio() {
