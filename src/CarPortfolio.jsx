@@ -16,12 +16,13 @@ const EXTERIOR_VIEWS = [
 // Without backticks, you were literally sending the string "${BASE}images/views/front.jpg" which is invalid.
 const INTERIOR_FRAME_COUNT = 12;
 
+
+
 export default function CarPortfolio() {
   const [selectedView, setSelectedView] = useState(EXTERIOR_VIEWS[0].src);
   const [interiorFrame, setInteriorFrame] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [startX, setStartX] = useState(0);
-  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
 
   const handleMouseDown = (e) => {
     setDragging(true);
@@ -38,19 +39,45 @@ export default function CarPortfolio() {
   };
 
   const handleMouseUp = () => setDragging(false);
+  const [form, setForm] = useState({
+    interest: "",
+    contactName: "",
+    contactNumber: ""
+  });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.phone || !form.message) {
-      alert('Please fill all fields!');
+
+    if (!form.interest) {
+      alert("Please select your interest!");
       return;
     }
-    alert('Enquiry submitted successfully! (Local only)');
-    setForm({ name: '', email: '', phone: '', message: '' });
+
+    if (form.interest === "yes" && (!form.contactName || !form.contactNumber)) {
+      alert("Please provide your name and phone number if you are interested!");
+      return;
+    }
+
+    // 🔹 For now, just show alert — Later we'll POST to ASP.NET Core API
+    let message = "Thank you for your time!\n";
+
+    if (form.interest === "yes") {
+      message += `You have indicated that you are interested in buying.\n` +
+        `We have received your contact details:\nName: ${form.contactName}\nPhone: ${form.contactNumber}\n` +
+        `We will contact you shortly.`;
+    } else {
+      message += "You have indicated that you are not interested in buying at this time.\n" +
+        "If you change your mind in the future, you are always welcome to get in touch.\n" +
+        "We respect your time and thank you.";
+    }
+
+    alert(message);
+    setForm({ interest: "", contactName: "", contactNumber: "" });
   };
 
   return (
@@ -133,7 +160,73 @@ export default function CarPortfolio() {
       <div className="bg-white rounded-lg shadow p-4">
         <h2 className="text-xl font-semibold mb-2">Buyer Enquiry Form</h2>
         <form className="space-y-3" onSubmit={handleSubmit}>
-          <input
+          {/* Interest Selection*/}
+          <div>
+            <label className='mr-4'>
+              <input
+                type="radio"
+                name="interest"
+                value="yes"
+                checked={form.interest === 'yes'}
+                onChange={handleChange}
+
+
+              />{" "}
+              Interested to Buy
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="interest"
+                value="no"
+                checked={form.interest === 'no'}
+                onChange={handleChange}
+              />{" "}
+              Not Interested to Buy
+            </label>
+          </div>
+          {/* Show only if Interested */}
+          {form.interest === "yes" && (
+            <>
+              <input
+                type="text"
+                name="contactName"
+                placeholder="Your Name"
+                value={form.contactName || ""}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+                maxLength={15}
+                pattern="^[A-Za-z][A-Za-z ]*$"// must start with letter, only letters + spaces
+                title="Name should start with a letter and contain only alphabets and spaces."
+                required
+
+              />
+              <input
+                type="text"
+                name="contactNumber"
+                placeholder="Your Phone"
+                value={form.contactNumber || ""}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+                maxLength={10}
+                pattern="[6-9][0-9]{9}" // Indian phone number pattern
+                title="Enter a valid 10-digit Indian phone number starting with 6, 7, 8, or 9."
+                required
+              />
+            </>
+          )}
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+            Submit Enquiry
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+
+//From Main Branch
+{/* <input
             type="text"
             name="name"
             placeholder="Your Name"
@@ -163,12 +256,5 @@ export default function CarPortfolio() {
             value={form.message}
             onChange={handleChange}
             className="w-full border rounded p-2"
-          ></textarea>
-          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-            Submit Enquiry
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-}
+          ></textarea> */}
+//
