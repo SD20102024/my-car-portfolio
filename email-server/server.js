@@ -1,30 +1,31 @@
 //
-const express = require("express");
-const nodemailer = require("nodemailer");
-const cors = require("cors");
-const bodyParser = require("body-parser");
+require("dotenv").config();
+import express from "express";
+import { createTransport } from "nodemailer";
+import cors from "cors";
+import { json } from "body-parser";
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
+app.use(json());
 
 // 📩 API endpoint to send email
 app.post("/send-contact", async (req, res) => {
     const { contactName, contactNumber } = req.body;
 
     // Setup Nodemailer transporter with Gmail
-    let transporter = nodemailer.createTransport({
+    let transporter = createTransport({
         service: "gmail",
         auth: {
-            user: "psinathd@gmail.com",         // replace with your Gmail
-            pass: "oxdr gajz uslb rmrw",      // replace with App Password
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
         },
     });
 
     // Define email content
     let mailOptions = {
-        from: "psinathd@gmail.com",
-        to: "psinathd@gmail.com",             // recipient (can be your same Gmail or another)
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,             // recipient (can be your same Gmail or another)
         subject: "New Contact Form Submission",
         text: `You received a new contact:\n\nName: ${contactName}\nPhone: ${contactNumber}`,
     };
