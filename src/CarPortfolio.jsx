@@ -49,65 +49,83 @@ export default function CarPortfolio() {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
-
+  //to send enquiry directly to Email
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.interest) {
-      alert("Please select your interest!");
-      return;
-    }
-
-    if (form.interest === "yes" && (!form.contactName || !form.contactNumber)) {
-      alert("Please provide your name and phone number if you are interested!");
-      return;
-    }
-
-    // 🔹 For now, just show alert — Later we'll POST to ASP.NET Core API
-    let message = "Thank you for your time!\n";
     try {
-      //Send POST request to API
-      //const response = axios.post('https://carportfolioapi.azurewebsites.net/api/enquiries', form);
-      const response = await axios.post('https://localhost:7010/api/enquiry', form);
-      console.log("Response from API:", response.data);
-      if (response.status == 200 && form.interest === "yes") {
-        message += `Hello ${form.contactName}, you are interested in buying.\n` +
-          `We have received your contact details:\nName: ${form.contactName}\nPhone: ${form.contactNumber}\n` +
-          `We will contact you shortly.`;
-        //alert(`Success! Your enquiry has been submitted.\n\n${JSON.stringify(response.data, null, 2)}`);
-      }
-      else if (response.status == 200 && form.interest === "no") {
-        message += "You have indicated that you are not interested in buying at this time.\n" +
-          "If you change your mind in the future, you are always welcome to get in touch.\n" +
-          "We respect your time and thank you.";
-      }
-      alert(message);
-      setForm({ interest: "", contactName: "", contactNumber: "" });
+      const res = await fetch("http://localhost:5000/send-contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),   // { contactName, contactNumber }
+      });
 
+      const data = await res.json();
+      setStatus(data.message);
+    } catch (err) {
+      console.error(err);
+      setStatus("Failed to send message.");
     }
-    catch (err) {
-      console.log(err);
-      alert("There was an error submitting your enquiry. Please try again later.");
-
-    }
-    //If not to use API
-    // let message = "Thank you for your time!\n";
-
-    // if (form.interest === "yes") {
-    //   message += `You have indicated that you are interested in buying.\n` +
-    //     `We have received your contact details:\nName: ${form.contactName}\nPhone: ${form.contactNumber}\n` +
-    //     `We will contact you shortly.`;
-    // } else {
-    //   message += "You have indicated that you are not interested in buying at this time.\n" +
-    //     "If you change your mind in the future, you are always welcome to get in touch.\n" +
-    //     "We respect your time and thank you.";
-    // }
-
-    // alert(message);
-    // setForm({ interest: "", contactName: "", contactNumber: "" });
-
   };
+
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!form.interest) {
+  //     alert("Please select your interest!");
+  //     return;
+  //   }
+
+  //   if (form.interest === "yes" && (!form.contactName || !form.contactNumber)) {
+  //     alert("Please provide your name and phone number if you are interested!");
+  //     return;
+  //   }
+
+  //   // 🔹 For now, just show alert — Later we'll POST to ASP.NET Core API
+  //   let message = "Thank you for your time!\n";
+  //   try {
+  //     //Send POST request to API
+  //     //const response = axios.post('https://carportfolioapi.azurewebsites.net/api/enquiries', form);
+  //     const response = await axios.post('https://localhost:7010/api/enquiry', form);
+  //     console.log("Response from API:", response.data);
+  //     if (response.status == 200 && form.interest === "yes") {
+  //       message += `Hello ${form.contactName}, you are interested in buying.\n` +
+  //         `We have received your contact details:\nName: ${form.contactName}\nPhone: ${form.contactNumber}\n` +
+  //         `We will contact you shortly.`;
+  //       //alert(`Success! Your enquiry has been submitted.\n\n${JSON.stringify(response.data, null, 2)}`);
+  //     }
+  //     else if (response.status == 200 && form.interest === "no") {
+  //       message += "You have indicated that you are not interested in buying at this time.\n" +
+  //         "If you change your mind in the future, you are always welcome to get in touch.\n" +
+  //         "We respect your time and thank you.";
+  //     }
+  //     alert(message);
+  //     setForm({ interest: "", contactName: "", contactNumber: "" });
+
+  //   }
+  //   catch (err) {
+  //     console.log(err);
+  //     alert("There was an error submitting your enquiry. Please try again later.");
+
+  //   }
+  //   //If not to use API
+  //   // let message = "Thank you for your time!\n";
+
+  //   // if (form.interest === "yes") {
+  //   //   message += `You have indicated that you are interested in buying.\n` +
+  //   //     `We have received your contact details:\nName: ${form.contactName}\nPhone: ${form.contactNumber}\n` +
+  //   //     `We will contact you shortly.`;
+  //   // } else {
+  //   //   message += "You have indicated that you are not interested in buying at this time.\n" +
+  //   //     "If you change your mind in the future, you are always welcome to get in touch.\n" +
+  //   //     "We respect your time and thank you.";
+  //   // }
+
+  //   // alert(message);
+  //   // setForm({ interest: "", contactName: "", contactNumber: "" });
+
+  // };
 
   return (
     <div className="p-6 space-y-6">
