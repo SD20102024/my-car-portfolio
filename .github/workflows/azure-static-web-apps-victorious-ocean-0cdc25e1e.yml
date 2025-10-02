@@ -3,9 +3,8 @@ name: Azure Static Web Apps CI/CD
 on:
   push:
     branches:
-      - feature-branch   # <-- your branch selected in Azure
+      - feature-branch   # <-- your Azure branch
   pull_request:
-    types: [opened, synchronize, reopened, closed]
     branches:
       - feature-branch
 
@@ -13,35 +12,34 @@ jobs:
   build_and_deploy_job:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
+
     steps:
-      - name: Checkout GitHub repo
+      # Step 1: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Step 2: Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'   # use your Node version
+          node-version: '20.x'
           cache: 'npm'
 
-      - name: Install dependencies
+      # Step 3: Install dependencies (including devDependencies)
+      - name: Install npm dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Build app with Vite
+      # Step 4: Build Vite app
+      - name: Build app
         run: npm run build
 
-      - name: Upload artifacts for deployment
-        uses: actions/upload-artifact@v3
-        with:
-          name: build_artifact
-          path: |
-            dist
-          
-      - name: Deploy to Azure Static Web App
+      # Step 5: Deploy to Azure Static Web App
+      - name: Deploy to Azure
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "/"           # your app folder
-          api_location: ""            # leave empty if no API
-          output_location: "dist"     # Vite default build output
+          app_location: "/"           # <-- adjust if your frontend is in a subfolder
+          api_location: ""            # <-- leave empty if no backend API
+          output_location: "dist"     # <-- matches Vite's default build output
